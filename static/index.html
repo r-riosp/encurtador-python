@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encurtador de Link</title>
+    <style>
+        /* CSS basiquinho só pra não ficar feio demais */
+        body {
+            font-family: sans-serif;
+            background-color: #222;
+            color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type="url"] {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #444;
+            color: #eee;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 25px;
+        }
+
+        #resultado a {
+            color: #87CEEB;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Encurtador de Link Raiz</h1>
+    <form id="form-encurtador">
+        <input type="url" id="link-input" placeholder="Cole seu link longo aqui..." required>
+        <button type="submit">Encurtar</button>
+    </form>
+    <div id="resultado">
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('form-encurtador');
+    const linkInput = document.getElementById('link-input');
+    const resultadoDiv = document.getElementById('resultado');
+
+    // Adiciona um "escutador de eventos" no formulário.
+    // A função aqui dentro será executada toda vez que o formulário for enviado.
+    form.addEventListener('submit', async (event) => {
+        // 1. Impede o comportamento padrão do formulário (que é recarregar a página)
+        event.preventDefault();
+
+        // 2. Pega o valor que o usuário digitou no campo de input
+        const linkOriginal = linkInput.value;
+        resultadoDiv.innerHTML = 'Encurtando...';
+
+        try {
+            // 3. Chama a API Python usando fetch
+            const response = await fetch('/encurtar', {
+                method: 'POST', // O método tem que ser POST
+                headers: {
+                    'Content-Type': 'application/json' // Avisa que estamos enviando JSON
+                },
+                // Converte nosso dado para o formato JSON
+                body: JSON.stringify({link_original: linkOriginal})
+            });
+
+            // 4. Pega a resposta da API e converte de volta para um objeto JavaScript
+            const data = await response.json();
+
+            // 5. Mostra o resultado na tela!
+            if (response.ok) {
+                resultadoDiv.innerHTML = `Link encurtado: <a href="${data.link_curto}" target="_blank">${data.link_curto}</a>`;
+            } else {
+                resultadoDiv.innerText = `Erro: ${data.erro || 'Ocorreu um problema.'}`;
+            }
+
+        } catch (error) {
+            // Trata erros de conexão com a API
+            console.error('Erro de conexão:', error);
+            resultadoDiv.innerText = 'Não foi possível conectar ao servidor.';
+        }
+    });
+</script>
+</body>
+</html>
