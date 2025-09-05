@@ -12,9 +12,6 @@
 - [✨ Features](#-features)
 - [🛠️ Stack de Tecnologias](#-stack-de-tecnologias)
 - [🔌 Endpoints da API](#-endpoints-da-api)
-- [🚀 Como Rodar Localmente](#-como-rodar-localmente)
-- [🎯 Próximos Passos](#-próximos-passos)
-- [📄 Licença](#-licença)
 
 ---
 
@@ -61,3 +58,4 @@ Cria um novo link encurtado.
 {
   "link_original": "[https://www.google.com](https://www.google.com)"
 }
+
